@@ -6,9 +6,10 @@ Webpage > AWS IOT (uses cognito to grant access)
 
 
 ## AWS IoT
-1. AWS IOT: create your things. The demo expects the following devices: light1, light2, light3, light4, frontlight, backlight, tv1, window1, window2, window3, window4, frontdoor. 
+1. AWS IOT: create your things. The demo expects the following devices: light1, light2, light3, light4, frontlight, backlight, tv1, window1, window2, window3, window4, frontdoor.
+2. Sample AWS IOT requests: https://github.com/PaulCutsinger/AlexaAWSIoT/tree/master/WebsiteCode/sample_requests
 
-## Alexa to AWS IoT
+## Alexa 
 ### Backend
 1. Lambda: create a Lamba function
 2. Lambda: update index.js in the /LambdaCode folder with your AWS IOT endpoint
@@ -17,7 +18,7 @@ Webpage > AWS IOT (uses cognito to grant access)
 ### Frontend
 1. create a skill on developer.amazon.com with the invocation name "our house" and using information from /SpeechAssets
 
-## AWS IoT to webpage
+## Webpage
 ### grant permission
 1. Cognito: create cognito identity pool, get creds from sample code tab
 2. IAM: Add IoT full access policy to Cognito Auth and Unauth roles that were created in step 1
