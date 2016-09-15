@@ -1,0 +1,84 @@
+body {
+    background-color:black;
+    font-size:9px;
+   
+}
+
+/*
+html {
+  background: url(../img/alexa.png) no-repeat center center fixed;
+  background-size: auto;
+}
+*/
+#floorplan { position: fixed; left: 0px; top: 0px; width: 115px; height: 118px;}
+
+#light1 { position: fixed; left: 235px; top: 99px; width: 78px; height: 106px; background-color: yellow; opacity: 1;}
+#light2 { position: fixed; left: 358px; top: 43px; width: 117px; height: 130px; background-color: yellow; opacity: 1;}
+#light3 { position: fixed; left: 202px; top: 212px; width: 111px; height: 114px; background-color: yellow; opacity: 1;}
+#light4 { position: fixed; left: 358px; top: 179px; width: 119px; height: 146px; background-color: yellow; opacity: 1;}
+
+#window1 {position: fixed; left: 278px; top: 38px; width: 49px; height: 4px;}
+#window2 {position: fixed; left: 380px; top: 38px; width: 76px; height: 5px;}
+#window3 {position: fixed; left: 222px; top: 326px; width: 71px; height: 6px;}
+#window4 {position: fixed; left: 384px; top: 326px; width: 77px; height: 5px;}
+
+
+#tv1 { position: fixed; left: 204px; top: 99px; width: 29px; height: 106px; background-color: blue; opacity: 1; text-align: center; }
+#tv1VolumeControl { margin-left:25%; margin-top:20%; width:40%; height:90%; border-style:solid; flex-direction:column;}
+#tv1VolumeCurrent {background-color: green; height:50%; }
+#tv1VolumeRemaining {background-color: white; height:50%; }
+
+#frontlight { position: fixed; left: 196px; top: 332px; width: 289px; height: 12px; background-color: yellow; opacity: 1;}
+#frontdoor {position: fixed; left: 326px; top: 325px; width: 40px; height: 7px;}
+
+#backlight { position: fixed; left: 255px; top: 12px; width: 230px; height: 24px; background-color: yellow; opacity: 1;}
+
+#title {
+   font-size: 72px;
+   text-align: middle;
+}
+
+.off{
+    display: none;
+}
+.on{
+    display: block;
+}
+
+.closed{
+    background-color: green;
+}
+.open{
+    background-color: red;
+}
+
+
+
+.ae-light{
+	font-family: 'amazon_emberlight';
+	font-weight: normal;
+	letter-spacing: -1px;
+}
+
+.ae-bold{
+	font-family: 'amazon_emberbold';
+	font-weight: normal;
+	letter-spacing: -1px;
+}
+.ae-info{
+	letter-spacing: 0.1px;
+}
+
+#image {
+    margin: 0 auto; /* horizontal center */
+    position: relative; /* these three lines are doing the vertical center */
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5; /* half faded, until WSS connection */
+}
+
+/* center the image within the div */
+#image img {
+    display:block;
+    margin: auto;
+}

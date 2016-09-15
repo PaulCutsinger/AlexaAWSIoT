@@ -1,0 +1,284 @@
+<html>
+
+<head>
+    <script type="text/javascript" src="./bower_components/mqttws/mqttws31.js"></script>
+    <script type="text/javascript" src="./bower_components/moment/moment.js"></script>
+    <script type="text/javascript" src="./bower_components/crypto-js/crypto-js.js"></script>
+    <script type="text/javascript" src="./bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="./bower_components/jquery-color/jquery.color.js"></script>
+    <script type="text/javascript" src="./bower_components/aws-sdk/dist/aws-sdk.min.js"></script>
+
+    <script type="text/javascript" src="./js/aws_sigv4.js"></script>
+    <script type="text/javascript" src="./js/aws_iot.js"></script>
+    <script type="text/javascript" src="./js/colors.js"></script>
+
+    <script type="text/javascript">
+    	/* globals AWS:false payload:true colors createMQTTClient $*/
+        console.log("Starting script");
+
+        const REGION   = 'us-east-1';
+        var mqttClient = undefined;
+
+        AWS.config.region = REGION;
+        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: 'us-east-1:a93f8152-71b2-46ee-9171-1b521d03ec89',
+        });
+        getAWSCredentials();
+
+        // Initialize the Amazon Cognito credentials provider
+        function getAWSCredentials() {
+            AWS.config.credentials.refresh(function(err) {
+               if (err) console.log(err, err.stack); // an error occurred
+               else {                                // successful response);
+                  onCredentialsAvailable(AWS.config.credentials);
+               }
+            });
+         }
+
+        function onCredentialsAvailable(creds) {
+
+            var cid = clientId();
+            console.log('ClientID = ' + cid);
+
+            // create connection to IoT Broker
+            mqttClient = createMQTTClient({
+                regionName: REGION,
+                accessKey: creds.accessKeyId,
+                secretKey: creds.secretAccessKey,
+                sessionToken: creds.sessionToken,
+                endpoint: "a32z24mjwr1har.iot.us-east-1.amazonaws.com",
+                clientId: cid
+            });
+
+            connect(mqttClient);
+
+        }
+
+        function connect(client) {
+           // connect mqtt client
+           client.connect({
+              onSuccess: onConnect,
+              onFailure: onConnectionFailure,
+              useSSL: true,
+              timeout: 30,
+              mqttVersion: 4
+           });
+
+           // set callback handlers
+           client.onConnectionLost = onConnectionLost;
+           client.onMessageArrived = onMessageArrived;
+        }
+
+        // called when the client connects
+        function onConnect() {
+            //show image
+            $('#image').fadeTo("slow" , 1, function() {
+                  // Animation complete.
+                  // show non clickable mouse cursor
+                  $('#image').css('cursor', 'auto');
+
+            });
+
+            $('#image').click(function() {
+               //do nothing
+            });
+
+            // Once a connection has been made, make a subscription and send a message.
+            console.log("onConnect");
+            mqttClient.subscribe("$aws/things/light1/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/light2/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/light3/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/light4/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/frontlight/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/backlight/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/tv1/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/window1/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/window2/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/window3/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/window4/shadow/update/accepted");
+            mqttClient.subscribe("$aws/things/frontdoor/shadow/update/accepted");
+            // message = new Paho.MQTT.Message("Hello");
+            // message.destinationName = "alexa/demo/color";
+            // mqttClient.send(message);
+        }
+
+        // called when client can not connect
+        function onConnectionFailure(error) {
+            console.log("Connection failed why");
+            console.log(error);
+        }
+
+        // called when the client loses its connection
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+
+               //fade image
+               $('#image').fadeTo("slow" , 0.5, function() {
+                     // Animation complete.
+                     //show clickable mouse cursor
+                     $('#image').css('cursor', 'pointer');
+               });
+
+               // allow user to reconnect when clicking the image
+               $('#image').click(function() {
+                  console.log('Reconnecting with fresh credentials'); 
+                  getAWSCredentials(); //this will trigger the update of the MQTT client and connection
+               });
+            }
+        }
+
+        // called when a message arrives
+        function onMessageArrived(message) {
+            console.log("onMessageArrived:" + message.payloadString);
+            payload = JSON.parse(message.payloadString);
+            console.log("state:"+payload.state);
+            var color=payload.state.desired.color;
+            var device=payload.state.desired.device;
+            var type=payload.state.desired.type;
+            var percent_on=payload.state.desired.percent_on;
+            var state=payload.state.desired.state;
+            if (percent_on>1){percent_on=1;} else if (percent_on<0){percent_on=0;} //constrain to be between 0 and 1
+
+            if (colors.hasOwnProperty(color)) {
+
+               // toggle title & logo on/off
+               if (color == 'transparent') {
+                  $('#title').show(600);
+                  $('#image').show(600);
+               } else {
+                  $('#title').hide(600);
+                  $('#image').hide(600);
+               }
+
+               // change background color
+               switch (type) {
+                   case "light":
+                    
+                       $('#'+device).fadeTo("fast",percent_on);
+                       $('#'+device).animate({
+                        backgroundColor : color,
+                        duration: 600
+                           },
+                           function completed() { //alert('finished');
+                           });
+                       
+                       break;
+                    case "portal": //doors or windows
+                         
+                        switch (state){
+
+                            case "closed":
+                                color = "blue"; /*unlocked but closed*/
+                            break;
+                            case "locked":
+                                color = "green"; /* locked */ 
+                            break;
+                            case "open":
+                            default:
+                                color = "red"; /*unlocked and open OR unknown state*/
+                            break;
+                            
+                        }
+                        console.log("color "+color);
+                        
+                        if(percent_on==0){
+                            $('#'+device).addClass("off"); //hide
+                        } else {
+                            $('#'+device).removeClass("off"); //show
+                        }
+                        $('#'+device).animate({
+                        backgroundColor : color,
+                        duration: 600
+                           },
+                           function completed() { //alert('finished');
+                           });
+                       
+                       break;
+                    case "tv":
+                        if(percent_on==0){
+                            $('#'+device+'VolumeControl').addClass("off"); //hide
+                        } else {
+                            $('#'+device+'VolumeControl').removeClass("off"); //show
+                        }
+                        
+                        $('#'+device+'VolumeCurrent').height(percent_on*100+'%');
+                        $('#'+device+'VolumeRemaining').height((1-percent_on)*100+'%');
+                        $('#'+device+'VolumeCurrent').text(Math.floor(percent_on*10));
+                        $('#'+device).fadeTo("fast",1);
+                        $('#'+device).animate({
+                        backgroundColor : color,
+                        duration: 600
+                           },
+                           function completed() { //alert('finished');
+                           });
+                       
+                       break;  
+                   
+                   
+               }
+
+            }
+        }
+
+        // generate a random UUID v4
+        function clientId() {
+           return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+               var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+               return v.toString(16);
+           });
+        }
+
+      //   $(document).ready(function() {
+      //   });
+    </script>
+    <!--
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    -->
+    <link rel="stylesheet" href="./css/fonts.css">
+    <link rel="stylesheet" href="./css/index.css"></link>
+</head>
+
+<body>
+    <div id="floorplan">
+        <img src="./img/HouseFlrPlan.png"/>
+    </div>
+    <div id="title">
+        <span class="ae-bold">Alexa</span> <span class="ae-light">talks to AWS IoT</span>
+    </div>
+    <div id="image">
+      <!--<img src="./img/alexa.png"/>-->
+    </div>
+    
+    
+    <div id="light1" ></div>
+    <div id="light2" ></div>
+    <div id="light3" ></div>
+    <div id="light4" ></div>
+    <div id="tv1" >
+        <div id="tv1VolumeControl">
+            <div id="tv1VolumeRemaining"></div>
+            <div id="tv1VolumeCurrent"></div>
+        </div>
+        
+    </div>
+
+    <div id="window1" class="open" ></div>
+    <div id="window2" class="open" ></div>
+    <div id="window3" class="open" ></div>
+    <div id="window4" class="open" ></div>
+    <div id="frontdoor" class="closed" ></div>
+    
+    <div id="frontlight" ></div>
+    <div id="backlight" ></div>
+    
+    
+    
+    
+    <div id="fixed1">Item 5a:- position: fixed; top: 70px; left: 30px; width: 220px; height: 40px;</div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+{ "state":
+  { "desired":
+   {"percent_on":1,
+     "color":"red",
+     "device":"frontdoor",
+     "type":"portal",
+     "isLocked":false,
+     "isOpen":true
+   }
+  }
+}
