@@ -8,7 +8,7 @@
                 "iot:Receive"
             ],
             "Resource": [
-                "arn:aws:iot:us-east-1:653599009844:topic/$aws/things"
+                "arn:aws:iot:us-east-1:[YOUR_AWS_IOT_ARN]:topic/$aws/things"
             ]
         },
         {
@@ -17,7 +17,7 @@
                 "iot:Subscribe"
             ],
             "Resource": [
-                "arn:aws:iot:us-east-1:653599009844:topicfilter/$aws/things"
+                "arn:aws:iot:us-east-1:[YOUR_AWS_IOT_ARN]:topicfilter/$aws/things"
             ]
         },
         {

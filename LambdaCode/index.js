@@ -1,11 +1,11 @@
 'use strict';
 var config = {};
 
-config.IOT_BROKER_ENDPOINT      = "a32z24mjwr1har.iot.us-east-1.amazonaws.com".toLowerCase();
+config.IOT_BROKER_ENDPOINT      = "[YOUR_AWS_IOT_MQTT_ENDPOINT].iot.us-east-1.amazonaws.com".toLowerCase();
 
 config.IOT_BROKER_REGION        = "us-east-1";
 
-config.IOT_THING_NAME           = "frontporchlight";
+//config.IOT_THING_NAME           = "frontporchlight";
 
 //Loading AWS SDK libraries
 

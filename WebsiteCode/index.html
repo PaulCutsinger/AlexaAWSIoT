@@ -21,7 +21,7 @@
 
         AWS.config.region = REGION;
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: 'us-east-1:a93f8152-71b2-46ee-9171-1b521d03ec89',
+            IdentityPoolId: 'us-east-1:[YOUR_IDENTITY_POOL]',
         });
         getAWSCredentials();
 
@@ -46,7 +46,7 @@
                 accessKey: creds.accessKeyId,
                 secretKey: creds.secretAccessKey,
                 sessionToken: creds.sessionToken,
-                endpoint: "a32z24mjwr1har.iot.us-east-1.amazonaws.com",
+                endpoint: "[YOUR_AWS_IOT_MQTT_ENDPOINT].iot.us-east-1.amazonaws.com",
                 clientId: cid
             });
 
@@ -85,6 +85,8 @@
 
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
+
+            //UPDATE TO MATCH YOUR THINGS
             mqttClient.subscribe("$aws/things/light1/shadow/update/accepted");
             mqttClient.subscribe("$aws/things/light2/shadow/update/accepted");
             mqttClient.subscribe("$aws/things/light3/shadow/update/accepted");
@@ -122,7 +124,7 @@
 
                // allow user to reconnect when clicking the image
                $('#image').click(function() {
-                  console.log('Reconnecting with fresh credentials'); 
+                  console.log('Reconnecting with fresh credentials');
                   getAWSCredentials(); //this will trigger the update of the MQTT client and connection
                });
             }
@@ -154,7 +156,7 @@
                // change background color
                switch (type) {
                    case "light":
-                    
+
                        $('#'+device).fadeTo("fast",percent_on);
                        $('#'+device).animate({
                         backgroundColor : color,
@@ -162,26 +164,26 @@
                            },
                            function completed() { //alert('finished');
                            });
-                       
+
                        break;
                     case "portal": //doors or windows
-                         
+
                         switch (state){
 
                             case "closed":
                                 color = "blue"; /*unlocked but closed*/
                             break;
                             case "locked":
-                                color = "green"; /* locked */ 
+                                color = "green"; /* locked */
                             break;
                             case "open":
                             default:
                                 color = "red"; /*unlocked and open OR unknown state*/
                             break;
-                            
+
                         }
                         console.log("color "+color);
-                        
+
                         if(percent_on==0){
                             $('#'+device).addClass("off"); //hide
                         } else {
@@ -193,7 +195,7 @@
                            },
                            function completed() { //alert('finished');
                            });
-                       
+
                        break;
                     case "tv":
                         if(percent_on==0){
@@ -201,7 +203,7 @@
                         } else {
                             $('#'+device+'VolumeControl').removeClass("off"); //show
                         }
-                        
+
                         $('#'+device+'VolumeCurrent').height(percent_on*100+'%');
                         $('#'+device+'VolumeRemaining').height((1-percent_on)*100+'%');
                         $('#'+device+'VolumeCurrent').text(Math.floor(percent_on*10));
@@ -212,10 +214,10 @@
                            },
                            function completed() { //alert('finished');
                            });
-                       
-                       break;  
-                   
-                   
+
+                       break;
+
+
                }
 
             }
@@ -249,8 +251,8 @@
     <div id="image">
       <!--<img src="./img/alexa.png"/>-->
     </div>
-    
-    
+
+
     <div id="light1" ></div>
     <div id="light2" ></div>
     <div id="light3" ></div>
@@ -260,7 +262,7 @@
             <div id="tv1VolumeRemaining"></div>
             <div id="tv1VolumeCurrent"></div>
         </div>
-        
+
     </div>
 
     <div id="window1" class="open" ></div>
@@ -268,13 +270,13 @@
     <div id="window3" class="open" ></div>
     <div id="window4" class="open" ></div>
     <div id="frontdoor" class="closed" ></div>
-    
+
     <div id="frontlight" ></div>
     <div id="backlight" ></div>
-    
-    
-    
-    
+
+
+
+
     <div id="fixed1">Item 5a:- position: fixed; top: 70px; left: 30px; width: 220px; height: 40px;</div>
 
 
