@@ -1,0 +1,56 @@
+{
+  "intents": [
+    {
+      "intent": "SceneIntent",
+      "slots": [
+      {
+        "name" : "Scene",
+        "type": "LIST_OF_SCENES"
+      }
+     ]
+    },
+     {
+      "intent": "LightIntent",
+      "slots": [
+      {
+        "name" : "Places",
+        "type": "LIST_OF_PLACES"
+      },
+      {
+        "name" : "State",
+        "type": "LIST_OF_STATES"
+      }
+     ]
+    },
+     {
+      "intent": "PortalIntent",
+      "slots": [
+      {
+        "name" : "Item",
+        "type": "LIST_OF_PLACES"
+      }
+     ]
+    },
+     {
+      "intent": "TvIntent",
+      "slots": [
+      {
+        "name" : "Item",
+        "type": "LIST_OF_PLACES"
+      }
+     ]
+    },
+    {
+      "intent": "AMAZON.RepeatIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
