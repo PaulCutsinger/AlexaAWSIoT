@@ -1,8 +1,8 @@
 # AlexaAWSIoT
 
 ## Overview
-Alexa skill > AWS IOT
-Webpage > AWS IOT (uses cognito to grant access)
+* Alexa skill > AWS IOT
+* Webpage > AWS IOT (uses cognito to grant access)
 
 
 ## AWS IoT
